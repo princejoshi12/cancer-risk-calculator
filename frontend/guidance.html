@@ -106,8 +106,8 @@
                 </ul>
             </nav>
             <div class="hero-content">
-                <h1>તમારું વ્યક્તિગત સ્વાસ્થ્ય માર્ગદર્શન</h1>
-                <p>તમારા પ્રશ્નોના જવાબ અને વ્યક્તિગત માહિતીના આધારે તૈયાર કરેલું માર્ગદર્શન</p>
+                <h1>Your personal health guide</h1>
+                <p>Tailored guidance based on answers to your questions and personal information</p>
             </div>
         </div>
     </div>
@@ -131,7 +131,7 @@
             const userAnswers = JSON.parse(sessionStorage.getItem('user_answers'));
 
             if (!riskAssessment || !userAnswers) {
-                $('#guidance-container').html('<p>માફ કરશો, કોઈ માહિતી ઉપલબ્ધ નથી. કૃપા કરીને પહેલા પ્રશ્નાવલી પૂર્ણ કરો.</p>');
+                $('#guidance-container').html('<p>Sorry, no information available. Please complete the questionnaire first.</p>');
                 return;
             }
 
@@ -151,7 +151,7 @@
                 .catch(error => {
                     console.error('Error:', error);
                     hideLoading();
-                    alert('માર્ગદર્શન લોડ કરવામાં ભૂલ આવી. કૃપા કરીને ફરીથી પ્રયાસ કરો.');
+                    alert('Error loading guide. Please try again.');
                 });
         });
 
