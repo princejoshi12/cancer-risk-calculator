@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancer Risk Calculator - Guidance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhai+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Baloo Bhai 2', cursive;
+            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .hero {
+            padding: 40px 0 80px;
+            text-align: center;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #4CAF50;
+        }
+        .btn-github {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-github:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin: 20px 0;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+        .guidance-content {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: -5rem;
+            margin-bottom: 50px;
+        }
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+        }
+        .loading-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="container">
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="questions.html">Try Now</a></li>
+                    <li><a href="#">Guidance</a></li>
+                    <li><a href="https://github.com/princejoshi12/cancer-risk-calculator" class="btn-github">Github</a></li>
+                </ul>
+            </nav>
+            <div class="hero-content">
+                <h1>તમારું વ્યક્તિગત સ્વાસ્થ્ય માર્ગદર્શન</h1>
+                <p>તમારા પ્રશ્નોના જવાબ અને વ્યક્તિગત માહિતીના આધારે તૈયાર કરેલું માર્ગદર્શન</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="guidance-container" class="guidance-content"></div>
+    </div>
+
+    <div class="loading">
+        <div class="loading-content">
+            <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            const riskAssessment = JSON.parse(sessionStorage.getItem('risk_assessment'));
+            const userAnswers = JSON.parse(sessionStorage.getItem('user_answers'));
+
+            if (!riskAssessment || !userAnswers) {
+                $('#guidance-container').html('<p>માફ કરશો, કોઈ માહિતી ઉપલબ્ધ નથી. કૃપા કરીને પહેલા પ્રશ્નાવલી પૂર્ણ કરો.</p>');
+                return;
+            }
+
+            showLoading();
+            fetch('http://127.0.0.1:5000/personalized-guidance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cancer_risk: riskAssessment, user_answers: userAnswers })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const converter = new showdown.Converter();
+                    const htmlContent = converter.makeHtml(data.guidance);
+                    $('#guidance-container').html(htmlContent);
+                    hideLoading();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    hideLoading();
+                    alert('માર્ગદર્શન લોડ કરવામાં ભૂલ આવી. કૃપા કરીને ફરીથી પ્રયાસ કરો.');
+                });
+        });
+
+        function showLoading() {
+            $('.loading').fadeIn(300);
+        }
+
+        function hideLoading() {
+            $('.loading').fadeOut(300);
+        }
+    </script>
+</body>
+</html>
