@@ -107,6 +107,9 @@ Here are some screenshots of the application:
   
   ![Guidance Page](screenshots/guidance.png)
 
+- **My Profile:**
+  
+  ![My Profile Page](screenshots/my-profile.png)
 ---
 
 Readme made with 💖 using [README Generator by Chirag Joshi](https://github.com/chiragjoshi12/readme-generator)
