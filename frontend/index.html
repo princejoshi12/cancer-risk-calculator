@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -126,13 +126,14 @@
                     <li><a href="#">Home</a></li>
                     <li><a href="questions.html">Try Now</a></li>
                     <li><a href="guidance.html">Guidance</a></li>
+                    <li><a href="profile.html">My Profile</a></li>
                     <li><a href="https://github.com/princejoshi12/cancer-risk-calculator" class="btn-github">Github</a></li>
                 </ul>
             </nav>
             <div class="hero-content">
                 <br><br>
                 <h1>With a cancer risk calculator</h1>
-                <p>Check your personal risk and take control of your health with guidance.</p>
+                <p>Check your personal risk and take control of your health with guidance</p>
                 <a href="questions.html" class="btn-custom">Try it now</a>
             </div>
         </div>
@@ -157,9 +158,20 @@
     </div>
 
     <script>
-        function startQuestionnaire() {
-            window.location.href = 'questions.html';
-        }
-    </script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userAnswers = sessionStorage.getItem('user_answers');
+            const userSummary = sessionStorage.getItem('user_summary');
+            const personalizedGuidance = sessionStorage.getItem('personalized_guidance');
+            const riskAssessment = sessionStorage.getItem('risk_assessment');
+    
+            if (userAnswers && userSummary && personalizedGuidance && riskAssessment) {
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = `
+                    <p>Your cancer risk is calculated and personalized guidance is ready.</p>
+                    <p><a href="guidance.html">Check Demo</a></p>
+                `;
+            }
+        });
+    </script>    
 </body>
 </html>

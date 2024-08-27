@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,8 +100,9 @@
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="questions.html">Try Now</a></li>
+                    <li><a href="questionnaire.html">Try Now</a></li>
                     <li><a href="#">Guidance</a></li>
+                    <li><a href="profile.html">My Profile</a></li>
                     <li><a href="https://github.com/princejoshi12/cancer-risk-calculator" class="btn-github">Github</a></li>
                 </ul>
             </nav>
@@ -125,43 +126,53 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/showdown/dist/showdown.min.js"></script>
     <script>
         $(document).ready(function () {
-            const riskAssessment = JSON.parse(sessionStorage.getItem('risk_assessment'));
-            const userAnswers = JSON.parse(sessionStorage.getItem('user_answers'));
-
-            if (!riskAssessment || !userAnswers) {
-                $('#guidance-container').html('<p>Sorry, no information available. Please complete the questionnaire first.</p>');
-                return;
-            }
-
-            showLoading();
-            fetch('http://127.0.0.1:5000/personalized-guidance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ cancer_risk: riskAssessment, user_answers: userAnswers })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const converter = new showdown.Converter();
-                    const htmlContent = converter.makeHtml(data.guidance);
-                    $('#guidance-container').html(htmlContent);
-                    hideLoading();
+            const personalizedGuidance = sessionStorage.getItem('personalized_guidance');
+    
+            if (personalizedGuidance) {
+                $('#guidance-container').html(personalizedGuidance);
+            } else {
+                const riskAssessment = JSON.parse(sessionStorage.getItem('risk_assessment'));
+                const userAnswers = JSON.parse(sessionStorage.getItem('user_answers'));
+    
+                if (!riskAssessment || !userAnswers) {
+                    $('#guidance-container').html('<p>Sorry, no information available. Please complete the questionnaire first.</p>');
+                    return;
+                }
+    
+                showLoading();
+                fetch('http://127.0.0.1:5000/personalized-guidance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cancer_risk: riskAssessment, user_answers: userAnswers })
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    hideLoading();
-                    alert('Error loading guide. Please try again.');
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        const converter = new showdown.Converter();
+                        const htmlContent = converter.makeHtml(data.guidance);
+                        $('#guidance-container').html(htmlContent);
+    
+                        sessionStorage.setItem('personalized_guidance', htmlContent);
+    
+                        hideLoading();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        hideLoading();
+                        alert('Error loading guide. Please try again.');
+                    });
+            }
         });
-
+    
         function showLoading() {
             $('.loading').fadeIn(300);
         }
-
+    
         function hideLoading() {
             $('.loading').fadeOut(300);
         }
-    </script>
+    </script>    
 </body>
 </html>
