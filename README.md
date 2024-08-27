@@ -1,4 +1,4 @@
-# Cancer Risk Assessment Application
+# Cancer Risk Assessment with AI
 
 This project is a web-based application designed to assess cancer risk by generating personalized health-related questions and providing detailed guidance based on user responses.
 
